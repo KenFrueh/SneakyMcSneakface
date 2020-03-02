@@ -5,16 +5,32 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
     public GameObject TitleBackground;
+
     public GameObject TitleText;
+
     public GameObject GameStart;
+
     public GameObject GameQuit;
+
+    public GameObject Player;
+
     //Tracking score
-    public int Score = 0;
-    public int Health = 100;
+    public float Score = 0.0f;
+    public float Health = 100.0f;
     // Start is called before the first frame update
     void Start()
     {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
         
     }
 

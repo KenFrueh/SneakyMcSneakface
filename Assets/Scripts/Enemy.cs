@@ -16,7 +16,7 @@ public class Enemy : MonoBehaviour
     //Is player is in range
     public float AttackRange;
 
-    
+    public float FieldOfView = 45;
     //Track health cutoff
     public float HPcutoff;
 
@@ -39,6 +39,7 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        canHear(GameManager.Instance.Player);
         if (AIState == "Idle")
         {   //Check behavior
             Idle();
@@ -104,6 +105,38 @@ public class Enemy : MonoBehaviour
     }
     public bool InRange()
     {
-        return Vector3.Distance(transform.position, tf.position) <= AttackRange);
+        return (Vector3.Distance(transform.position, tf.position) <= AttackRange);
+    }//Hearing player
+
+    public bool canHear(GameObject target)
+    {
+        //Get NoiseMaker from target
+        NoiseMaker noise = target.GetComponent<NoiseMaker>();
+        //if there is a noisemaker we could potentailly hear the target
+        if (noise != null)
+        {
+            float adjustedVolumeDis = noise.volumeDist - Vector3.Distance(tf.position, target.transform.position);
+            //if we're close enough hear noise
+            if (adjustedVolumeDis > 0)
+            {
+                Debug.Log("We can Hear you");
+                return true;
+            }
+        }
+        return false;
+
+
+    }//Seeing player
+    public bool canSee(GameObject target)
+    {
+        Vector3 vectorToTarget = target.transform.position - tf.position;
+        //Detect if target is in FOV
+        float angleToTarget = Vector3.Angle(vectorToTarget, tf.up);
+        if(angleToTarget <= FieldOfView)
+        {
+            //Detect if in line of sight
+            
+        }
+        return false;
     }
 }
