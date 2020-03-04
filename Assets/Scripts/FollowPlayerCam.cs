@@ -1,19 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class FollowPlayerCam : MonoBehaviour
-{   //Class setup
-    public GameObject Player;
-    public Vector3 offset;
-
-    void Start()
+{//Getting following position
+    private Func<Vector3> GetCameraFollowPointFunc;
+    //Camera set up
+    public void Setup(Func<Vector3> GetCameraFollowPointFunc)
     {
-        offset = transform.position - Player.transform.position;
+        this.GetCameraFollowPointFunc = GetCameraFollowPointFunc;
     }
-    // Update is called once per frame
     void Update()
-    {
-        transform.position = Player.transform.position + offset;
+    {//Following player
+        Vector3 cameraFollowPos = GetCameraFollowPointFunc();
+        cameraFollowPos.z = transform.position.z;
+        transform.position = cameraFollowPos;
     }
+
 }

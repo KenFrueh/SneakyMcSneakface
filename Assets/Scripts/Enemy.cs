@@ -5,7 +5,8 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {   //Transform
     private Transform tf;
-    
+    //Turn rate
+    private float turnSpeed = 110.0f;
     //Track state of AI
     public string AIState = "Idle";
     
@@ -16,7 +17,7 @@ public class Enemy : MonoBehaviour
     //Is player is in range
     public float AttackRange;
 
-    public float FieldOfView = 45;
+    public float FieldOfView = 45.0f;
     //Track health cutoff
     public float HPcutoff;
 
@@ -76,6 +77,7 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogError("State does not exist: " + AIState);
         }
+        RotateTowards(target, false);
     }
     //Idle state
     void Idle()
@@ -129,14 +131,37 @@ public class Enemy : MonoBehaviour
     }//Seeing player
     public bool canSee(GameObject target)
     {
+        Transform targetTF = target.GetComponent<Transform>();
+        Vector3 targetPosition = targetTF.position;
         Vector3 vectorToTarget = target.transform.position - tf.position;
         //Detect if target is in FOV
         float angleToTarget = Vector3.Angle(vectorToTarget, tf.up);
         if(angleToTarget <= FieldOfView)
         {
             //Detect if in line of sight
-            
+            RaycastHit2D hitInfo = Physics2D.Raycast(tf.position, vectorToTarget);
+
+            if (hitInfo.collider.gameObject == target)
+            {
+                return true;
+            }
         }
         return false;
+    }
+    //Turning towards the player
+    protected void RotateTowards(Transform target, bool isInstant)
+    {//Tracking position of player
+        Vector3 direction = target.position - transform.position;
+        direction.Normalize();
+        float zAngle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90);
+        if (!isInstant)
+        {
+            Quaternion targetLocation = Quaternion.Euler(0, 0, zAngle);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetLocation, turnSpeed * Time.deltaTime);
+        }
+        else
+        {//Editing rotation based on location
+            transform.rotation = Quaternion.Euler(0, 0, zAngle);
+        }
     }
 }

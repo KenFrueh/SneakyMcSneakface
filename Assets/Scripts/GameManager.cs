@@ -7,15 +7,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public GameObject TitleBackground;
-
-    public GameObject TitleText;
-
-    public GameObject GameStart;
-
-    public GameObject GameQuit;
-
     public GameObject Player;
+    //Getting camera follow
+    public FollowPlayerCam cameraFollow;
+    public Transform playerTransform;
 
     //Tracking score
     public float Score = 0.0f;
@@ -23,7 +18,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -31,23 +26,13 @@ public class GameManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-        
+        //Following the player with camera
+        cameraFollow.Setup(() => playerTransform.position);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }//Quit game
-    public void OnApplicationQuit()
-    {
-        Application.Quit();
-    }//Start game
-    public void StartGame()
-    {
-        TitleBackground.SetActive(false);
-        TitleText.SetActive(false);
-        GameStart.SetActive(false);
-        GameQuit.SetActive(false);
-    }
 }
