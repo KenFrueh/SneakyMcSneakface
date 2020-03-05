@@ -16,8 +16,8 @@ public class Enemy : MonoBehaviour
 
     //Is player is in range
     public float AttackRange;
+    public float FieldOfView = 45f;
 
-    public float FieldOfView = 45.0f;
     //Track health cutoff
     public float HPcutoff;
 
@@ -34,7 +34,7 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {//Getting transform
-        tf = gameObject.GetComponent<Transform>();   
+        tf = gameObject.GetComponent<Transform>();
     }
 
     // Update is called once per frame
@@ -145,9 +145,11 @@ public class Enemy : MonoBehaviour
             {
                 return true;
             }
+            
         }
         return false;
     }
+    
     //Turning towards the player
     protected void RotateTowards(Transform target, bool isInstant)
     {//Tracking position of player

@@ -34,5 +34,5 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
-    }//Quit game
+    }
 }

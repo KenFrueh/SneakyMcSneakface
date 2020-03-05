@@ -37,6 +37,7 @@ public class PlyrController : MonoBehaviour
         {
             Knife();
         }
+
     }
     //Attack function
     void Knife()

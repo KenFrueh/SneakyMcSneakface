@@ -180,6 +180,6 @@ MonoBehaviour:
   AttackRange: 0
   FieldOfView: 45
   HPcutoff: 0
-  target: {fileID: 0}
+  target: {fileID: 2438555028290486072, guid: 47a5ba8ec4dd5bd4eb06176ba25508ef, type: 3}
   Speed: 5
   restingHealRate: 1
