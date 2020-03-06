@@ -6,10 +6,10 @@ public class Enemy : MonoBehaviour
 {   //Transform
     private Transform tf;
     //Turn rate
-    private float turnSpeed = 110.0f;
+    private float turnSpeed = 90.0f;
     //Track state of AI
     public string AIState = "Idle";
-    
+
     //Track enemies health
     public float HitPoints;
     public float MaxHitPoints;
@@ -29,6 +29,7 @@ public class Enemy : MonoBehaviour
 
     //Heal rate
     public float restingHealRate = 1.0f;
+    public float sightRange;
 
 
     // Start is called before the first frame update
@@ -40,14 +41,14 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        canHear(GameManager.Instance.Player);
         if (AIState == "Idle")
         {   //Check behavior
             Idle();
             //Check for transition
-            if (InRange())
+            if (canSee(target.gameObject) /*|| canHear(target.gameObject)*/)
             {
                 AIState = "Seek";
+                RotateTowards(target, false);
             }
 
         }
@@ -67,7 +68,7 @@ public class Enemy : MonoBehaviour
             {
                 ChangeState("Rest");
             }
-            if (!InRange())
+            if (!canSee(target.gameObject) || canHear(target.gameObject))
             {
                 ChangeState("Idle");
             }
@@ -77,7 +78,7 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogError("State does not exist: " + AIState);
         }
-        RotateTowards(target, false);
+
     }
     //Idle state
     void Idle()
@@ -105,10 +106,7 @@ public class Enemy : MonoBehaviour
     {
         AIState = newState;
     }
-    public bool InRange()
-    {
-        return (Vector3.Distance(transform.position, tf.position) <= AttackRange);
-    }//Hearing player
+
 
     public bool canHear(GameObject target)
     {
@@ -133,37 +131,37 @@ public class Enemy : MonoBehaviour
     {
         Transform targetTF = target.GetComponent<Transform>();
         Vector3 targetPosition = targetTF.position;
-        Vector3 vectorToTarget = target.transform.position - tf.position;
+        Vector2 vectorToTarget = tf.position - target.transform.position;
         //Detect if target is in FOV
-        float angleToTarget = Vector3.Angle(vectorToTarget, tf.up);
-        if(angleToTarget <= FieldOfView)
+        if (Vector2.Angle(-transform.up, vectorToTarget) > FieldOfView)
         {
-            //Detect if in line of sight
-            RaycastHit2D hitInfo = Physics2D.Raycast(tf.position, vectorToTarget);
-
-            if (hitInfo.collider.gameObject == target)
-            {
-                return true;
-            }
-            
+            return false;
         }
-        return false;
-    }
-    
-    //Turning towards the player
-    protected void RotateTowards(Transform target, bool isInstant)
-    {//Tracking position of player
-        Vector3 direction = target.position - transform.position;
-        direction.Normalize();
-        float zAngle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90);
-        if (!isInstant)
+        else if (Vector2.Distance(transform.position, targetTF.position) > sightRange)
         {
-            Quaternion targetLocation = Quaternion.Euler(0, 0, zAngle);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetLocation, turnSpeed * Time.deltaTime);
+            return false;
         }
         else
-        {//Editing rotation based on location
-            transform.rotation = Quaternion.Euler(0, 0, zAngle);
+        {
+            Debug.Log("I can see you");
+            return true;
         }
     }
+
+    //Turning towards the player
+    protected void RotateTowards(Transform target, bool isInstant)
+     {//Tracking position of player
+         Vector3 direction = target.position - transform.position;
+         direction.Normalize();
+         float zAngle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90);
+         if (!isInstant)
+         {
+             Quaternion targetLocation = Quaternion.Euler(0, 0, zAngle);
+             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetLocation, turnSpeed * Time.deltaTime);
+         }
+         else
+         {//Editing rotation based on location
+             transform.rotation = Quaternion.Euler(0, 0, zAngle);
+         }
+     }
 }
