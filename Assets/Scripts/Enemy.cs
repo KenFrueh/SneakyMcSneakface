@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
-{   //Transform
+{
+    public static ProgessBar instance;
+    //Transform
     private Transform tf;
     //Turn rate
     private float turnSpeed = 90.0f;
@@ -107,7 +109,6 @@ public class Enemy : MonoBehaviour
         AIState = newState;
     }
 
-
     public bool canHear(GameObject target)
     {
         //Get NoiseMaker from target
@@ -124,8 +125,13 @@ public class Enemy : MonoBehaviour
             }
         }
         return false;
-
-
+    }
+    public void OnCollisionEnter2D(Collision2D otherObject)//Colliding with an object 
+    {
+        if (otherObject.gameObject.transform == target)
+        {
+            GameManager.Instance.Health -= 25;
+        }
     }//Seeing player
     public bool canSee(GameObject target)
     {

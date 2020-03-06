@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+
 public class ProgessBar : MonoBehaviour
 {
+    public static ProgessBar instance;
+
     public float CurrentHealth;//Current Health
 
     public float MaxHealth = 100.0f;//Max Health
@@ -13,7 +17,8 @@ public class ProgessBar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CurrentHealth = MaxHealth;//Equaling values
+        GameManager.Instance.Health = MaxHealth;
+        //Equaling values
         HealthBar = gameObject.GetComponent<Image>();
         HealthBar.type = Image.Type.Filled;
         HealthBar.fillMethod = Image.FillMethod.Horizontal;
@@ -22,7 +27,7 @@ public class ProgessBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float percentFilled = CurrentHealth / MaxHealth;
+        float percentFilled = GameManager.Instance.Health / MaxHealth;
         HealthBar.fillAmount = percentFilled;
         if (percentFilled > .25)//Changing colors
         {

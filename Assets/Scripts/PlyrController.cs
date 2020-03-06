@@ -2,9 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlyrController : MonoBehaviour
 {
+    public static ProgessBar instance;
     private Transform tf;//getting transform of object
     public float turnSpeed = 1.0f;//Max 110
     public float movementSpeed = 1.0f;//Max 3
@@ -37,10 +40,27 @@ public class PlyrController : MonoBehaviour
         {
             Knife();
         }
-
     }
-    //Attack function
-    void Knife()
+    public void OnCollisionEnter2D(Collision2D otherObject)//Colliding with an object 
+    {
+        if (otherObject.gameObject.tag == "AssassinEnemy")
+        {
+            GameManager.Instance.Health -= 25;
+
+        }
+        else if (GameManager.Instance.Health <= 0)
+        {
+            Destroy(this.gameObject);
+            //Game Over Screen
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        else
+        {
+            //nothing
+        }
+    }
+        //Attack function
+        void Knife()
     {
         throw new NotImplementedException();
     }
